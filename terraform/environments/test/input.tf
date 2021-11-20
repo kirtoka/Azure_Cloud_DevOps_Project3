@@ -3,8 +3,12 @@ variable "subscription_id" {}
 variable "client_id" {}
 variable "client_secret" {}
 variable "tenant_id" {}
-variable "vm_password" {}
 
+variable "prefix" {
+  description = "Prefix"
+  default     = "udacity-project3"
+  type        = string
+}
 
 # Resource Vars
 variable "location" {
@@ -13,8 +17,3 @@ variable "location" {
   type        = string
 }
 
-variable "prefix" {
-  description = "Prefix of all the resources"
-  default     = "udacity-project3"
-  type        = string
-}

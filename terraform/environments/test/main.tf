@@ -9,7 +9,7 @@ provider "azurerm" {
 terraform {
   backend "azurerm" {
     resource_group_name  = "tfstate"
-    storage_account_name = "tfstate12012"
+    storage_account_name = "tfstate16018"
     container_name       = "tfstate"
     key                  = "terraform.state"
   }
@@ -21,20 +21,6 @@ module "resource_group" {
   resource_group       = "${var.prefix}-rg" # personally this is how I like to have my stuff with pre-defined tags on the end for consistentcy
   location             = var.location
 }
-module "virtual_network" {
-  source                 = "../../modules/networking/virtualnetwork"
-  prefix                 = var.prefix
-  resource_group         = module.resource_group.resource_group_name # Use the name that was output by the resource group module
-  location               = var.location
-}
-module "security_group" {
-  source                  = "../../modules/networking/securitygroup"
-  prefix                  = var.prefix
-  resource_group          = module.resource_group.resource_group_name
-  location                = var.location
-  subnet_id               = module.virtual_network.subnet_id
-  subnet_address_prefixes = module.virtual_network.subnet_address_prefixes
-}
 module "app_service" {
   source                  = "../../modules/appservice"
   prefix                  = var.prefix
@@ -42,11 +28,26 @@ module "app_service" {
   location                = var.location
 }
 module "publicip" {
-  source                  = "../../modules/networking/publicip"
+  source                  = "../../modules/publicip"
   prefix                  = var.prefix
   resource_group          = module.resource_group.resource_group_name
   location                = var.location
 }
+module "virtual_network" {
+  source                 = "../../modules/virtualnetwork"
+  prefix                 = var.prefix
+  resource_group         = module.resource_group.resource_group_name # Use the name that was output by the resource group module
+  location               = var.location
+}
+module "security_group" {
+  source                  = "../../modules/securitygroup"
+  prefix                  = var.prefix
+  resource_group          = module.resource_group.resource_group_name
+  location                = var.location
+  subnet_id               = module.virtual_network.subnet_id
+  subnet_address_prefixes = module.virtual_network.subnet_address_prefixes
+}
+
 module "virtual_machine" {
   source                  = "../../modules/vm"
   prefix                  = var.prefix
