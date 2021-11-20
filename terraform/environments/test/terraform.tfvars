@@ -1,0 +1,5 @@
+subscription_id ="87374ef2-5c69-4884-abed-6e7bb3294548"
+client_id       =""
+client_secret   =""
+tenant_id       =""
+vm_password     =""
