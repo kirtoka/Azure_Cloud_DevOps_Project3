@@ -1,8 +1,8 @@
 provider "azurerm" {
-  tenant_id       = var.tenant_id
-  subscription_id = var.subscription_id
-  client_id       = var.client_id
-  client_secret   = var.client_secret
+  tenant_id       = "${var.tenant_id}"
+  subscription_id = "${var.subscription_id}"
+  client_id       = "${var.client_id}"
+  client_secret   = "${var.client_secret}"
   features {}
 }
 # This is where the terraform state is held in the storage account
@@ -55,5 +55,4 @@ module "virtual_machine" {
   location                = var.location
   public_ip_address_id    = module.publicip.public_ip_address_id
   subnet_id               = module.virtual_network.subnet_id
-  vm_password             = var.vm_password
 }
