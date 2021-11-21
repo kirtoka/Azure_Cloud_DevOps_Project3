@@ -22,11 +22,10 @@ stages:
         inputs:
           terraformVersion: '0.12.3'
       - task: TerraformTaskV2@2
-        displayName: Terraform Init
+        displayName: Terra Init
         inputs:
           provider: 'azurerm'
           command: 'init'
-          commandOptions: '-out $(Build.BuildNumber)'
           backendServiceArm: 'Azure subscription 1(87374ef2-5c69-4884-abed-6e7bb3294548)'
           backendAzureRmResourceGroupName: 'udacity-project3-rg'
           backendAzureRmStorageAccountName: 'tfstate16018'
