@@ -14,11 +14,20 @@ steps:
   displayName: 'Run a one-line script'
   
 - task: TerraformCLI@0
+  displayName: 'Terraform Init'
   inputs:
     command: 'init'
     secureVarsFile: 'terraform.tfvars'
     backendType: 'azurerm'
     allowTelemetryCollection: true
+    commandOptions: |
+            -backend-config "access_key=$(STORAGE_ACCESS_KEY)"
+    backendServiceArm: 'finprojserviceprincipal'
+    backendAzureRmResourceGroupName: 'finprojstorage'
+    backendAzureRmStorageAccountName: 'finproj30893'
+    backendAzureRmContainerName: 'finprojcontainer'
+    backendAzureRmKey: terraform.tfstate'
+    workingDirectory: '$(System.DefaultWorkingDirectory)/terraform/environments/test'
     
 - script: |
     echo the end.
