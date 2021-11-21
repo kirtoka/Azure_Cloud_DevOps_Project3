@@ -25,7 +25,7 @@ steps:
       export ARM_CLIENT_SECRET=$servicePrincipalKey
       export ARM_TENANT_ID=$tenantId
 
-      terraform init
+      terraform init'
 
 - script: |
     echo Add other tasks to build, test, and deploy your project.
