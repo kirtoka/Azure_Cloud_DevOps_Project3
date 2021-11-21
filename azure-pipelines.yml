@@ -31,18 +31,19 @@ stages:
           backendAzureRmStorageAccountName: 'tfstate16018'
           backendAzureRmContainerName: 'tfstate'
           backendAzureRmKey: 'terraform.tfstate'
+          workingDirectory: '$(System.DefaultWorkingDirectory)/terraform/environments/test'
               
       - task: TerraformTaskV2@2
         displayName: Terraform Plan
         inputs:
           provider: 'azurerm'
           command: 'plan'
-          environmentServiceNameAzureRM: '$(AZURE_SUBSCRIPTION_ID)'
+          environmentServiceNameAzureRM: 'Azure subscription 1(87374ef2-5c69-4884-abed-6e7bb3294548)'
           workingDirectory: '$(System.DefaultWorkingDirectory)/terraform/environments/test'
       - task: TerraformTaskV2@2
         displayName: Terraform Apply
         inputs:
           provider: 'azurerm'
           command: 'apply'
-          environmentServiceNameAzureRM: '$(AZURE_SUBSCRIPTION_ID)'
+          environmentServiceNameAzureRM: 'Azure subscription 1(87374ef2-5c69-4884-abed-6e7bb3294548)'
           workingDirectory: '$(System.DefaultWorkingDirectory)/terraform/environments/test'
