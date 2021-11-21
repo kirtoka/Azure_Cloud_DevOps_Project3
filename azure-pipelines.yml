@@ -45,6 +45,8 @@ stages:
         inputs:
           provider: 'azurerm'
           command: 'apply'
+          commandOptions: |
+            -auto-approve
           environmentServiceNameAzureRM: 'Azure subscription 1(87374ef2-5c69-4884-abed-6e7bb3294548)'
           workingDirectory: '$(System.DefaultWorkingDirectory)/terraform/environments/test'
 
