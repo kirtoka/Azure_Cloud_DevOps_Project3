@@ -9,7 +9,7 @@ stages:
   displayName: 'Provisioning'
   jobs:
   - job: provisioning
-    displayName: 'Inrrastracture Provisioning with Terraform'
+    displayName: 'Infrastracture Provisioning with Terraform'
     steps:
       - task: InstallSSHKey@0
         displayName: 'Install ssh-keys'
@@ -47,3 +47,32 @@ stages:
           command: 'apply'
           environmentServiceNameAzureRM: 'Azure subscription 1(87374ef2-5c69-4884-abed-6e7bb3294548)'
           workingDirectory: '$(System.DefaultWorkingDirectory)/terraform/environments/test'
+
+- stage: Build
+  displayName: 'Build'
+  jobs:
+  - job: Build
+    displayName: 'Build'
+    pool:
+      vmImage: ubuntu-latest
+    steps:
+    - task: ArchiveFiles@2
+      displayName: 'Archive FakeRestAPI'
+      inputs:
+        rootFolderOrFile: '$(System.DefaultWorkingDirectory)/automatedtesting/jmeter/fakerestapi'
+        includeRootFolder: false
+        archiveType: 'zip'
+        archiveFile: '$(Build.ArtifactStagingDirectory)/drop-fakerestapi-$(Build.BuildId).zip'
+    - publish: $(Build.ArtifactStagingDirectory)
+      displayName: 'Upload FakeRestAPI'
+      artifact: drop-fakerestapi
+    - task: ArchiveFiles@2
+      displayName: 'Archive Selenium tests'
+      inputs:
+        rootFolderOrFile: '$(System.DefaultWorkingDirectory)/automatedtesting/selenium'
+        includeRootFolder: false
+        archiveType: 'zip'
+        archiveFile: '$(Build.ArtifactStagingDirectory)/$(Build.BuildId)-selenium-tests.zip'
+    - publish: $(Build.ArtifactStagingDirectory)/$(Build.BuildId)-selenium-tests.zip
+      displayName: 'Upload Selenium Tests'
+      artifact: drop-selenium
