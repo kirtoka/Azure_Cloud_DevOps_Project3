@@ -4,6 +4,9 @@ variable "client_id" {}
 variable "client_secret" {}
 variable "tenant_id" {}
 
+variable "public_key" {}
+variable "admin_username" {}
+
 variable "prefix" {
   description = "Prefix"
   default     = "udacity-project3"

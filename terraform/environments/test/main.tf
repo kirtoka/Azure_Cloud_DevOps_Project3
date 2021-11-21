@@ -55,4 +55,6 @@ module "virtual_machine" {
   location                = var.location
   public_ip_address_id    = module.publicip.public_ip_address_id
   subnet_id               = module.virtual_network.subnet_id
+  admin_username          = var.admin_username
+  public_key              = var.public_key
 }
