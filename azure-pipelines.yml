@@ -27,12 +27,12 @@ stages:
           provider: 'azurerm'
           command: 'init'
           commandOptions: '-out $(Build.BuildNumber)'
-          backendServiceArm: '$(AZURE_SUBSCRIPTION_ID)'
+          backendServiceArm: 'Azure subscription 1(87374ef2-5c69-4884-abed-6e7bb3294548)'
           backendAzureRmResourceGroupName: 'udacity-project3-rg'
           backendAzureRmStorageAccountName: 'tfstate16018'
           backendAzureRmContainerName: 'tfstate'
           backendAzureRmKey: 'terraform.tfstate'
-        
+              
       - task: TerraformTaskV2@2
         displayName: Terraform Plan
         inputs:
