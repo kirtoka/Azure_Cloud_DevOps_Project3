@@ -1,0 +1,26 @@
+# Starter pipeline
+# Start with a minimal pipeline that you can customize to build and deploy your code.
+# Add steps that build, run tests, deploy, and more:
+# https://aka.ms/yaml
+
+trigger:
+- main
+
+pool:
+  vmImage: ubuntu-latest
+
+steps:
+- script: echo terraform install!
+  displayName: 'Run a one-line script'
+- task: TerraformTaskV2@2
+  inputs:
+    provider: 'azurerm'
+    command: 'init'
+    backendServiceArm: 'Azure subscription 1(87374ef2-5c69-4884-abed-6e7bb3294548)'
+    backendAzureRmResourceGroupName: 'udacity-project3-rg'
+    backendAzureRmStorageAccountName: 'tfstate16018'
+    backendAzureRmContainerName: 'tfstate'
+    backendAzureRmKey: 'mBzRngS+lqb3D9ljLIdbcw6DFCQHagR3SYZOT06chWB2oKDO7Aa+/gRWD9L+PIEMMtj2kmDySxcPZZXWGSBYAg=='
+- script: |
+    echo the end.
+  displayName: 'Run a multi-line script'
