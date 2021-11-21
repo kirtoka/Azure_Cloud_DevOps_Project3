@@ -13,21 +13,26 @@ steps:
 - script: echo Hello, world!
   displayName: 'Run a one-line script'
 
-- task: AzureCLI@2
-  displayName: "Terraform"
-  inputs:
-    azureSubscription:  shared-${{ parameters.environment }}-001
-    scriptType: bash
-    addSpnToEnvironment: true
-    scriptLocation: inlineScript
-    inlineScript: |
-      export ARM_CLIENT_ID=$servicePrincipalId
-      export ARM_CLIENT_SECRET=$servicePrincipalKey
-      export ARM_TENANT_ID=$tenantId
+trigger:
+- main
 
-      terraform init'
+pool:
+  vmImage: ubuntu-latest
+
+steps:
+- script: echo terraform install start
+  displayName: 'Run a one-line script'
+- task: TerraformTaskV2@2
+  displayName: Terra Init
+  inputs:
+    provider: 'azurerm'
+    command: 'init'
+    backendServiceArm: 'Azure subscription 1(87374ef2-5c69-4884-abed-6e7bb3294548)'
+    backendAzureRmResourceGroupName: 'udacity-project3-rg'
+    backendAzureRmStorageAccountName: 'tfstate16018'
+    backendAzureRmContainerName: 'tfstate'
+    backendAzureRmKey: 'terraform.tfstate'
 
 - script: |
-    echo Add other tasks to build, test, and deploy your project.
-    echo See https://aka.ms/yaml
+    echo the end.
   displayName: 'Run a multi-line script'
