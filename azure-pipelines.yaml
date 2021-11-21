@@ -9,10 +9,10 @@ stages:
   displayName: 'Provisioning'
   jobs:
   - job: provisioning
-    displayName: 'Provisioning with Terraform'
+    displayName: 'Provisioning Infrastructure with Terraform'
     steps:
       - task: InstallSSHKey@0
-        displayName: 'Install ssh keys'
+        displayName: 'Install ssh-keys'
         inputs:
           knownHostsEntry: 'default'
           sshKeySecureFile: 'id_rsa'
@@ -27,10 +27,10 @@ stages:
           command: 'init'
           commandOptions: |
             -backend-config "access_key=$(STORAGE_ACCESS_KEY)"
-          backendServiceArm: 'finprojserviceprincipal'
-          backendAzureRmResourceGroupName: 'finprojstorage'
-          backendAzureRmStorageAccountName: 'finproj30893'
-          backendAzureRmContainerName: 'finprojcontainer'
+          backendServiceArm: 'tf-sys'
+          backendAzureRmResourceGroupName: 'tfstate'
+          backendAzureRmStorageAccountName: 'tfstate16018'
+          backendAzureRmContainerName: 'tfstate'
           backendAzureRmKey: terraform.tfstate'
           workingDirectory: '$(System.DefaultWorkingDirectory)/terraform/environments/test'
       - task: TerraformTaskV1@0
@@ -40,7 +40,7 @@ stages:
           command: 'plan'
           commandOptions: |
             -var "subscription_id=$(AZURE_SUBSCRIPTION_ID)" -var "client_id=$(CLIENT_ID)" -var "client_secret=$(CLIENT_SECRET)" -var "tenant_id=$(TENANT_ID)" -var "public_key=$(PUBLIC_KEY)"
-          environmentServiceNameAzureRM: 'finprojserviceprincipal'
+          environmentServiceNameAzureRM: 'tf-sys'
           workingDirectory: '$(System.DefaultWorkingDirectory)/terraform/environments/test'
       - task: TerraformTaskV1@0
         displayName: 'Terraform Apply'
@@ -49,7 +49,7 @@ stages:
           command: 'apply'
           commandOptions: |
             -var "subscription_id=$(AZURE_SUBSCRIPTION_ID)" -var "client_id=$(CLIENT_ID)" -var "client_secret=$(CLIENT_SECRET)" -var "tenant_id=$(TENANT_ID)" -var "public_key=$(PUBLIC_KEY)"
-          environmentServiceNameAzureRM: 'finprojserviceprincipal'
+          environmentServiceNameAzureRM: 'tf-sys'
           workingDirectory: '$(System.DefaultWorkingDirectory)/terraform/environments/test'
     
 - stage: Build
@@ -57,7 +57,7 @@ stages:
   - job: Build
     displayName: 'Build'
     pool:
-      name: Hosted Ubuntu 1604
+      vmImage: 'ubuntu-18.04'
     steps:
     - task: ArchiveFiles@2
       displayName: 'Archive FakeRestAPI'
@@ -93,7 +93,7 @@ stages:
       displayName: 'Deploy FakerRestApi to AppService'
       inputs:
         azureSubscription: 'finprojserviceprincipal'
-        WebAppName: 'finproj21952-AppService'
+        WebAppName: 'udacity-project3-app'
         Package:  $(Pipeline.Workspace)/drop-fakerestapi/drop-fakerestapi-$(Build.BuildId).zip
         enableCustomDeployment: true
         DeploymentType: zipDeploy
@@ -143,7 +143,7 @@ stages:
   - job: IntegrationTests
     displayName: 'Integration Tests'
     pool:
-      name: Hosted Ubuntu 1604
+      vmImage: 'ubuntu-18.04'
     steps:
     - task: CmdLine@2
       displayName: 'Install Newman runner'
@@ -173,7 +173,7 @@ stages:
   - job: LoadTests
     displayName: Load Tests
     pool:
-      name: Hosted Ubuntu 1604
+      vmImage: 'ubuntu-18.04'
     steps: 
     - task: JMeterInstaller@0
       inputs:
