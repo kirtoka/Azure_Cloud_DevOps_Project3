@@ -1,204 +1,296 @@
 trigger:
 - main
 
-name: Azure Pipelines
-variables:
-  python.version: '3.8.8'
 stages:
-- stage: Provisioning
-  displayName: 'Provisioning'
+- stage: "Provisioning"
   jobs:
   - job: provisioning
-    displayName: 'Provisioning Infrastructure with Terraform'
+    displayName: 'Infrastructure Provisioning with Terraform '
+    pool:
+      vmimage: 'ubuntu-18.04'
     steps:
-      - task: InstallSSHKey@0
-        displayName: 'Install ssh-keys'
-        inputs:
-          knownHostsEntry: 'default'
-          sshKeySecureFile: 'id_rsa'
-      - task: TerraformInstaller@0
-        displayName: 'Install terraform'
-        inputs:
-          terraformVersion: '1.0.9'
-      - task: TerraformTaskV1@0
-        displayName: 'Terraform Init'
-        inputs:
-          provider: 'azurerm'
-          command: 'init'
-          commandOptions: |
-            -backend-config "access_key=$(STORAGE_ACCESS_KEY)"
-          backendServiceArm: 'tf-sys'
-          backendAzureRmResourceGroupName: 'tfstate'
-          backendAzureRmStorageAccountName: 'tfstate16018'
-          backendAzureRmContainerName: 'tfstate'
-          backendAzureRmKey: terraform.tfstate'
-          workingDirectory: '$(System.DefaultWorkingDirectory)/terraform/environments/test'
-      - task: TerraformTaskV1@0
-        displayName: 'Terraform Plan'
-        inputs:
-          provider: 'azurerm'
-          command: 'plan'
-          commandOptions: |
-            -var "subscription_id=$(AZURE_SUBSCRIPTION_ID)" -var "client_id=$(CLIENT_ID)" -var "client_secret=$(CLIENT_SECRET)" -var "tenant_id=$(TENANT_ID)" -var "public_key=$(PUBLIC_KEY)"
-          environmentServiceNameAzureRM: 'tf-sys'
-          workingDirectory: '$(System.DefaultWorkingDirectory)/terraform/environments/test'
-      - task: TerraformTaskV1@0
-        displayName: 'Terraform Apply'
-        inputs:
-          provider: 'azurerm'
-          command: 'apply'
-          commandOptions: |
-            -var "subscription_id=$(AZURE_SUBSCRIPTION_ID)" -var "client_id=$(CLIENT_ID)" -var "client_secret=$(CLIENT_SECRET)" -var "tenant_id=$(TENANT_ID)" -var "public_key=$(PUBLIC_KEY)"
-          environmentServiceNameAzureRM: 'tf-sys'
-          workingDirectory: '$(System.DefaultWorkingDirectory)/terraform/environments/test'
     
+    - task: DownloadSecureFile@1
+      displayName: Download Terraform Variables file
+      name: tfvars
+      inputs:
+        secureFile: 'terraform.tfvars'
+    
+    - script: |
+        sudo cp $(tfvars.secureFilePath) terraform/environments/test/terraform.tfvars
+      displayName: Copy terraform.tfvars File
+      
+    - task: InstallSSHKey@0
+      displayName: 'Install ssh-keys'
+      inputs:
+        knownHostsEntry: 'default'
+        sshKeySecureFile: 'id_rsa'
+
+    - task: TerraformInstaller@0
+      displayName: Install Terraform
+      inputs:
+        terraformVersion: '1.0.9'
+
+    - task: TerraformTaskV1@0
+      displayName: Terraform Init
+      inputs:
+        provider: 'azurerm'
+        command: 'init'
+        workingDirectory: '$(System.DefaultWorkingDirectory)/terraform/environments/test/'
+        backendServiceArm: 'tf-sys'
+        backendAzureRmResourceGroupName: 'tfstate'
+        backendAzureRmStorageAccountName: 'tfstate16018'
+        backendAzureRmContainerName: 'tfstate'
+        backendAzureRmKey: 'terraform.state'
+
+    - task: TerraformTaskV1@0
+      displayName: Terraform Apply
+      inputs:
+        provider: 'azurerm'
+        command: 'apply'
+        commandOptions: |
+          -auto-approve 
+        workingDirectory: '$(System.DefaultWorkingDirectory)/terraform/environments/test/'
+        environmentServiceNameAzureRM: 'tf-sys'
+
 - stage: Build
   jobs:
-  - job: Build
-    displayName: 'Build'
+  - job: build_artifacts
+    displayName: Build Artifacts
     pool:
       vmImage: 'ubuntu-18.04'
     steps:
     - task: ArchiveFiles@2
-      displayName: 'Archive FakeRestAPI'
+      displayName: Archive FakeRestAPI
       inputs:
-        rootFolderOrFile: '$(System.DefaultWorkingDirectory)/automatedtesting/jmeter/fakerestapi'
+        rootFolderOrFile: '$(System.DefaultWorkingDirectory)/fakerestapi'
         includeRootFolder: false
         archiveType: 'zip'
-        archiveFile: '$(Build.ArtifactStagingDirectory)/drop-fakerestapi-$(Build.BuildId).zip'
-    - publish: $(Build.ArtifactStagingDirectory)
-      displayName: 'Upload FakeRestAPI'
-      artifact: drop-fakerestapi
+        archiveFile: '$(Build.ArtifactStagingDirectory)/fakerestapi-$(Build.BuildId).zip'
+        verbose: true
+
+    - task: PublishPipelineArtifact@1
+      displayName: Publish FakeRestAPI artifact
+      inputs:
+        targetPath: '$(Build.ArtifactStagingDirectory)/fakerestapi-$(Build.BuildId).zip'
+        artifactName: 'fakerestapi'
+
     - task: ArchiveFiles@2
-      displayName: 'Archive Selenium tests'
+      displayName: Archive Selenium
       inputs:
         rootFolderOrFile: '$(System.DefaultWorkingDirectory)/automatedtesting/selenium'
         includeRootFolder: false
         archiveType: 'zip'
-        archiveFile: '$(Build.ArtifactStagingDirectory)/$(Build.BuildId)-selenium-tests.zip'
-    - publish: $(Build.ArtifactStagingDirectory)/$(Build.BuildId)-selenium-tests.zip
-      displayName: 'Upload Selenium Tests'
-      artifact: drop-selenium
+        archiveFile: '$(Build.ArtifactStagingDirectory)/selenium-$(Build.BuildId).zip'
+        verbose: true
+
+    - task: PublishPipelineArtifact@1
+      displayName: Publish Selenium artifact
+      inputs:
+        targetPath: '$(Build.ArtifactStagingDirectory)/selenium-$(Build.BuildId).zip'
+        artifactName: 'selenium'
 
 - stage: Deploy
-  displayName: 'Deploy'
   jobs:
-  - job: DeployWebApp
-    displayName: 'Deploy FakerRestApi to AppService'
-    steps:
-    - download: current
-      displayName: 'Download FakerRestApi'
-      artifact: drop-fakerestapi
-    - task: AzureRmWebAppDeployment@4
-      displayName: 'Deploy FakerRestApi to AppService'
-      inputs:
-        azureSubscription: 'finprojserviceprincipal'
-        WebAppName: 'udacity-project3-app'
-        Package:  $(Pipeline.Workspace)/drop-fakerestapi/drop-fakerestapi-$(Build.BuildId).zip
-        enableCustomDeployment: true
-        DeploymentType: zipDeploy
-        TakeAppOfflineFlag: false
-
-- stage: PostDeployment
-  displayName: 'Post-deployment'
-  jobs:
-  - deployment: UITests
-    displayName: 'UI Tests'
+  - deployment: deploy_fakerestapi
+    displayName: Deploy FakeRestAPI
+    pool:
+      vmImage: 'ubuntu-18.04'
+    environment: 'test'
+    strategy:
+      runOnce:
+        deploy:
+          steps:
+          - task: AzureWebApp@1
+            displayName: Deploy Azure WebApp
+            inputs:
+              azureSubscription: 'terraform-sa'
+              appName: 'udacity-project3-app'
+              appType: webApp
+              package: $(Pipeline.Workspace)/fakerestapi/fakerestapi-$(Build.BuildId).zip
+              deploymentMethod: zipDeploy
+  
+  - deployment: deployment_vm
+    displayName: Deploy Virtual Machine
     environment:
-      name:  'test'
+      name: 'TEST'
       resourceType: VirtualMachine
     strategy:
       runOnce:
         deploy:
           steps:
-          - download: current
-            displayName: 'Download Selenium'
-            artifact: drop-selenium
           - task: Bash@3
-            displayName: 'Install Selenium'
+            displayName: Configure selenium
             inputs:
               targetType: 'inline'
               script: |
-                #! /bin/bash
-                
-                sudo apt-get upgrade -y
+                pwd
+                hostname
+                sudo apt-get install software-properties-common -y
+                sudo apt-add-repository universe -y
+                sudo apt-get update -y
                 sudo apt-get install python3-pip -y
                 sudo apt-get install unzip -y
                 sudo apt-get install -y chromium-browser
                 sudo apt-get install -y chromium-chromedriver
+                python3 -m pip install --upgrade pip
                 pip3 install selenium
-                export PATH=$PATH:/usr/lib/chromium-browser/
-                cd $(Pipeline.Workspace)/drop-selenium
-                unzip -o $(Pipeline.Workspace)/drop-selenium/$(Build.BuildId)-selenium-tests -d .
-          - task: Bash@3
-            displayName: 'Run Selenium Tests'
-            inputs:
-              targetType: 'inline'
-              script: |
-                sudo mkdir /var/logs
-                cd $(Pipeline.Workspace)/drop-selenium
-                echo $(date "+%Y-%m-%d %H:%M:%S") >> /var/logs/selenium-test.log
-                python3 login.py >> /var/logs/selenium-test.log
-                cat /var/logs/selenium-test.log
-  - job: IntegrationTests
-    displayName: 'Integration Tests'
+                python3 -V
+                pip3 -V
+                /usr/bin/chromium-browser --version
+                /usr/bin/chromedriver --version
+- stage: Test
+  jobs:
+  - job: postman_integration
+    displayName: Postman Integration Tests
     pool:
       vmImage: 'ubuntu-18.04'
     steps:
-    - task: CmdLine@2
-      displayName: 'Install Newman runner'
+    
+    - task: NodeTool@0
+      displayName: Install Node v12.X
       inputs:
-        script: 'sudo npm install -g newman'
-        workingDirectory: $(System.DefaultWorkingDirectory)
-    - task: CmdLine@2
-      displayName: 'Run data validation tests'
-      continueOnError: true
+        versionSpec: '12.x'
+    
+    - task: Bash@3
+      displayName: Install Newman CLI
       inputs:
+        targetType: 'inline'
         script: |
-          newman run -e test.postman_environment.json data_validation_tests.json --reporters cli,junit --reporter-junit-export $(Build.SourcesDirectory)/automatedtesting/postman/newman_test_result.xml
-        workingDirectory: '$(System.DefaultWorkingDirectory)/automatedtesting/postman'
-    - task: CmdLine@2
-      displayName: 'Run regression tests'
-      continueOnError: true
+          npm install -g newman
+          mkdir -p output/newman/
+    - task: Bash@3
+      displayName: Run Regression Tests
       inputs:
+        targetType: 'inline'
         script: |
-          newman run -e test.postman_environment.json regression_tests.json --reporters cli,junit --reporter-junit-export $(Build.SourcesDirectory)/automatedtesting/postman/newman_test_result.xml
-        workingDirectory: '$(System.DefaultWorkingDirectory)/automatedtesting/postman'
+          newman run automatedtesting/postman/DummyRestAPI_Regression.postman_collection.json \
+           --environment automatedtesting/postman/DummyEnv.postman_environment.json \
+           --suppress-exit-code \
+           --delay-request 5000 \
+           --reporters cli,junit --reporter-junit-export output/newman/regression.xml
+    
+    - task: Bash@3
+      displayName: Run Data Validation Tests
+      inputs:
+        targetType: 'inline'
+        script: |
+          newman run automatedtesting/postman/DummyRestAPI_Validate.postman_collection.json \
+           --environment automatedtesting/postman/DummyEnv.postman_environment.json \
+           --suppress-exit-code \
+           --delay-request 5000 \
+           --reporters cli,junit --reporter-junit-export output/newman/validation.xml
+    
     - task: PublishTestResults@2
-      displayName: 'Publish Test Results'
+      displayName: 'Publish Integration Test Results'
       inputs:
-        testResultsFormat: 'JUnit'
-        testResultsFiles: '**/newman_test_*.xml'
+        testRunner: 'JUnit'
+        searchFolder: '$(System.DefaultWorkingDirectory)/output/newman/'
+        testResultsFiles: '*.xml'
+        mergeTestResults: true
+        testRunTitle: 'Integration Test Results'
 
-  - job: LoadTests
-    displayName: Load Tests
+  - deployment: test_vm
+    displayName: Deploy and Run Selenium Tests
+    environment:
+      name: 'TEST'
+      resourceType: VirtualMachine
+    strategy:
+      runOnce:
+        deploy:
+          steps:
+          - task: Bash@3
+            displayName: Run Selenium Tests
+            inputs:
+              targetType: 'inline'
+              script: |
+                cd $(Pipeline.Workspace)/selenium
+                find . -type f ! -name 'selenium-$(Build.BuildId).zip' -delete  # delete everything except 'selenium-$(Build.BuildId).zip'
+                unzip -o selenium-$(Build.BuildId).zip
+                pwd
+                ls -la
+                sudo mkdir -p /var/log/selenium
+                sudo chmod 777 /var/log/selenium
+                ls -la
+                sudo python3 -u tests.py 2>&1 | sudo tee -a '/var/log/selenium/selenium-test-$(Build.BuildId).log'
+                # copy selenium log file to $(System.DefaultWorkingDirectory)/log/selenium/
+                cd $(System.DefaultWorkingDirectory)
+                mkdir -p log/selenium
+                pwd
+                sudo cp '/var/log/selenium/selenium-test-$(Build.BuildId).log' 'log/selenium/selenium-test-$(Build.BuildId).log'
+                ls -la
+          - task: PublishPipelineArtifact@1
+            displayName: Publish selenium logs
+            inputs:
+              targetPath: '$(System.DefaultWorkingDirectory)/log/selenium/selenium-test-$(Build.BuildId).log'
+              artifactName: 'selenium-logs'
+  
+  - job: jmeter_tests
+    displayName: jMeter Tests
     pool:
       vmImage: 'ubuntu-18.04'
-    steps: 
-    - task: JMeterInstaller@0
-      inputs:
-        jmeterVersion: '5.2.1'
-    - task: Bash@3
-      displayName: Endurance Tests
-      inputs:
-        targetType: 'inline'
-        script: |
-          mkdir -p endurance-report
-          jmeter -n -t endurance_test.jmx -l endurance_tests_results.csv -f -e -o endurance-report
-        workingDirectory: '$(System.DefaultWorkingDirectory)/automatedtesting/jmeter'
-    - task: Bash@3
-      displayName: Stress Tests
-      inputs:
-        targetType: 'inline'
-        script: |
-          mkdir -p stress-report
-          jmeter -n -t stress_test.jmx -l stress_tests_results.csv -f -e -o stress-report
-        workingDirectory: '$(System.DefaultWorkingDirectory)/automatedtesting/jmeter'
-    - task: PublishBuildArtifacts@1
-      inputs:
-        PathtoPublish: '$(System.DefaultWorkingDirectory)/automatedtesting/jmeter/endurance-report'
-        ArtifactName: 'endurance-test-result'
-    - task: PublishBuildArtifacts@1
-      inputs:
-        PathtoPublish: '$(System.DefaultWorkingDirectory)/automatedtesting/jmeter/stress-report'
-        ArtifactName: 'stress-test-result'
+    steps:
+      - task: Bash@3
+        displayName: Install jMeter
+        inputs:
+          targetType: 'inline'
+          script: |
+            sudo apt-get install openjdk-11-jre-headless -y
+            java -version
+            wget https://archive.apache.org/dist/jmeter/binaries/apache-jmeter-5.4.1.tgz -O jmeter.tgz
+            tar xzvf jmeter.tgz
+            apache-jmeter-5.4.1/bin/jmeter --version
+            # create log directory
+            mkdir -p log/jmeter
+            pwd
+            ls -la
+      - task: Bash@3
+        displayName: Run Stress Test
+        inputs:
+          targetType: 'inline'
+          script: |
+            apache-jmeter-5.4.1/bin/jmeter -n -t automatedtesting/jmeter/stress-test.jmx \
+                                     -l log/jmeter/stress-test-result.csv \
+                                     -e -f -o log/jmeter/stress-test-report.html \
+                                     -j log/jmeter/jmeter-stress-test.log
+      - task: Bash@3
+        displayName: Run Endurance Test
+        inputs:
+          targetType: 'inline'
+          script: |
+            apache-jmeter-5.4.1/bin/jmeter -n -t automatedtesting/jmeter/endurance-test.jmx \
+                                     -l log/jmeter/endurance-test-result.csv \
+                                     -e -f -o log/jmeter/endurance-test-report.html \
+                                     -j log/jmeter/jmeter-endurance-test.log
+      
+      - task: ArchiveFiles@2
+        displayName: Archive JMeter stress test HTML report
+        inputs:
+          rootFolderOrFile: '$(System.DefaultWorkingDirectory)/log/jmeter/stress-test-report.html'
+          includeRootFolder: false
+          archiveType: 'zip'
+          archiveFile: '$(System.DefaultWorkingDirectory)/log/jmeter/stress-test-html-report-$(Build.BuildId).zip'
+          verbose: true
+      - task: ArchiveFiles@2
+        displayName: Archive JMeter endurance test HTML report
+        inputs:
+          rootFolderOrFile: '$(System.DefaultWorkingDirectory)/log/jmeter/endurance-test-report.html'
+          includeRootFolder: false
+          archiveType: 'zip'
+          archiveFile: '$(System.DefaultWorkingDirectory)/log/jmeter/endurance-test-html-report-$(Build.BuildId).zip'
+          verbose: true
+      - task: Bash@3
+        displayName: Clean Up Tests
+        inputs:
+          targetType: 'inline'
+          script: |
+            rm -rf log/jmeter/stress-test-report.html
+            rm -rf log/jmeter/endurance-test-report.html
+            cd log/jmeter
+            pwd
+            ls -la
+      - task: PublishPipelineArtifact@1
+        displayName: Publish JMeter logs
+        inputs:
+          targetPath: '$(System.DefaultWorkingDirectory)/log/jmeter'
+          artifactName: 'drop-jmeter-logs'
