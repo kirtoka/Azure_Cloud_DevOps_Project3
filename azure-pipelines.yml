@@ -15,7 +15,7 @@ stages:
         displayName: 'Install ssh-keys'
         inputs:
           knownHostsEntry: 'default'
-          sshPublicKey: $(PUBLIC_KEY)'
+          sshPublicKey: '$(PUBLIC_KEY)'
           sshKeySecureFile: 'id_rsa'
       - task: ms-devlabs.custom-terraform-tasks.custom-terraform-installer-task.TerraformInstaller@0
         displayName: 'Terraform Install'
@@ -26,7 +26,8 @@ stages:
         inputs:
           provider: 'azurerm'
           command: 'init'
-          backendServiceArm: 'tf-sys'
+          commandOptions: '-out $(Build.BuildNumber)'
+          backendServiceArm: '$(AZURE_SUBSCRIPTION_ID)'
           backendAzureRmResourceGroupName: 'udacity-project3-rg'
           backendAzureRmStorageAccountName: 'tfstate16018'
           backendAzureRmContainerName: 'tfstate'
