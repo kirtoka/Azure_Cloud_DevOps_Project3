@@ -27,7 +27,7 @@ stages:
           provider: 'azurerm'
           command: 'init'
           backendServiceArm: 'Azure subscription 1(87374ef2-5c69-4884-abed-6e7bb3294548)'
-          backendAzureRmResourceGroupName: 'udacity-project3-rg'
+          backendAzureRmResourceGroupName: 'tfstate'
           backendAzureRmStorageAccountName: 'tfstate16018'
           backendAzureRmContainerName: 'tfstate'
           backendAzureRmKey: 'terraform.tfstate'
