@@ -12,23 +12,15 @@ pool:
 steps:
 - script: echo terraform install!
   displayName: 'Run a one-line script'
-  
-- task: TerraformCLI@0
-  displayName: 'Terraform Init'
+- task: TerraformTaskV2@2
   inputs:
+    provider: 'azurerm'
     command: 'init'
-    secureVarsFile: 'terraform.tfvars'
-    backendType: 'azurerm'
-    allowTelemetryCollection: true
-    commandOptions: |
-            -backend-config "access_key=$(STORAGE_ACCESS_KEY)"
-    backendServiceArm: 'finprojserviceprincipal'
-    backendAzureRmResourceGroupName: 'finprojstorage'
-    backendAzureRmStorageAccountName: 'finproj30893'
-    backendAzureRmContainerName: 'finprojcontainer'
-    backendAzureRmKey: terraform.tfstate'
-    workingDirectory: '$(System.DefaultWorkingDirectory)/terraform/environments/test'
-    
+    backendServiceArm: 'Azure subscription 1(87374ef2-5c69-4884-abed-6e7bb3294548)'
+    backendAzureRmResourceGroupName: 'udacity-project3-rg'
+    backendAzureRmStorageAccountName: 'tfstate16018'
+    backendAzureRmContainerName: 'tfstate'
+    backendAzureRmKey: 'mBzRngS+lqb3D9ljLIdbcw6DFCQHagR3SYZOT06chWB2oKDO7Aa+/gRWD9L+PIEMMtj2kmDySxcPZZXWGSBYAg=='
 - script: |
     echo the end.
   displayName: 'Run a multi-line script'
