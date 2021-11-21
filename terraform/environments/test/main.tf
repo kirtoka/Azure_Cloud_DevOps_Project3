@@ -8,6 +8,7 @@ provider "azurerm" {
 # This is where the terraform state is held in the storage account
 terraform {
   backend "azurerm" {
+    subscription_id      = "87374ef2-5c69-4884-abed-6e7bb3294548"
     resource_group_name  = "tfstate"
     storage_account_name = "tfstate16018"
     container_name       = "tfstate"
