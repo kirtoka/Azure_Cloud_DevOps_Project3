@@ -143,6 +143,14 @@ stages:
                 echo $(date "+%Y-%m-%d %H:%M:%S") >> /var/logs/selenium-test.log
                 python3 login.py >> /var/logs/selenium-test.log
                 cat /var/logs/selenium-test.log
+        on:
+          failure:
+            steps:
+            - script: echo FAILED
+          success:
+            steps:
+            - script: echo PASSED
+            
   - job: IntegrationTests
     displayName: 'Integration Tests'
     pool:
