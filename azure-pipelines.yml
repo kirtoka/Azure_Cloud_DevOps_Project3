@@ -123,7 +123,6 @@ stages:
                 pwd
                 hostname
                 echo sudo
-                sudo npm install -g
                 sudo apt-get upgrade -y
                 sudo apt-get install python3-pip -y
                 sudo apt-get install unzip -y
@@ -139,7 +138,6 @@ stages:
               targetType: 'inline'
               script: |
                 #! /bin/bash
-                ls -la
                 sudo mkdir /var/logs
                 sudo chmod 777 /var/logs
                 ls -la
