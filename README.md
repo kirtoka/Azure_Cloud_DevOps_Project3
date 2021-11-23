@@ -9,7 +9,6 @@ date: 23.11.2021
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](https://opensource.org/licenses/MIT)
 ![Terraform](https://img.shields.io/badge/Terraform-v1.09-green)
 ![Postman](https://img.shields.io/badge/Postman-FF6C37)
-[![Build Status](https://dev.azure.com/VeraChirtoca/VM-deploy/_apis/build/status/Azure_Cloud_DevOps_Project3%20-v%20g?branchName=main)](https://dev.azure.com/VeraChirtoca/VM-deploy/_build/latest?definitionId=4&branchName=main)
 
 This is Udacity Cloud DevOps using Microsoft Azure Nanodegree Program's Final Project.
 Using Microsoft Azure, we will: 
@@ -157,35 +156,39 @@ Please complete the following steps for this project:
 ## Outut
 
 ### Log output of Terraform when executed by the CI/CD pipeline
-![log output of Terraform](./Sscreenshots/screenshot_6.jpg)
-![log output of Terraform](./Sscreenshots/screenshot_8.jpg)
+![log output of Terraform](./Screenshots/screenshot_6.jpg)
+![log output of Terraform](./Screenshots/screenshot_8.jpg)
 
 ### Deployed fakerestapi
-![deployed fakerestapi](./Sscreenshots/screenshot_17.jpg)
-
+![deployed fakerestapi](./Screenshots/screenshot_17.jpg)
 
 ### Successful execution of the pipeline build results page
-![build fakerestapi](./Sscreenshots/screenshot_12.jpg)
+![build fakerestapi](./Screenshots/screenshot_16.jpg)
 
 ### Log output of JMeter when executed by the CI/CD pipeline
-
-![build fakerestapi](./Sscreenshots/screenshot_15.jpg)
+![build fakerestapi](./Screenshots/screenshot_15.jpg)
 
 ### Execution of the UI (Selenium) test suite by the CI/CD pipeline
-![build fakerestapi](./Sscreenshots/screenshot_14.jpg)
+![build fakerestapi](./Screenshots/screenshot_14.jpg)
 
 ### Execution of the Integration test suite by the CI/CD pipeline
-![newman regression test](./Sscreenshots/regression_test.jpg)
+![build fakerestapi](./Screenshots/screenshot_16.jpg)
+![build fakerestapi](./Screenshots/screenshot_27.jpg)
+![build fakerestapi](./Screenshots/screenshot_18.jpg)
+![build fakerestapi](./Screenshots/screenshot_29.jpg)
+![build fakerestapi](./Screenshots/screenshot_30.jpg)
+
+![newman regression test](./Screenshots/regression_test.jpg)
 ![newman data validation test](./Sscreenshots/data_validation_test.jpg)
-![newman test runs](./Sscreenshots/integration_test_runs.jpg)
-![newman test summary](./Sscreenshots/integration_test_summary.jpg)
+![newman test runs](./Screenshots/integration_test_runs.jpg)
+![newman test summary](./Screenshots/integration_test_summary.jpg)
 
 ### Email received when the 404 alert is triggered
-![azure monitor alert](./Sscreenshots/Screenshot_20.png)
-![azure monitor alert](./Sscreenshots/Screenshot_21.png)
+![azure monitor alert](./Screenshots/Screenshot_20.png)
+![azure monitor alert](./Screenshots/Screenshot_21.png)
 
 ### Appservice metrics
-![azure metrics](./Sscreenshots/Screenshot_19.png)
-![azure metrics](./Sscreenshots/Screenshot_22.png)
+![azure metrics](./Screenshots/Screenshot_19.png)
+![azure metrics](./Screenshots/Screenshot_22.png)
 ### Log analytics queries
 ![azure log analytics](./Screenshots/Screenshot_28.png)
