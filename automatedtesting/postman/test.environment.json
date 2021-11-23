@@ -1,0 +1,49 @@
+{
+	"id": "0b563a66-5c89-4b91-988b-2380c83f12c0",
+	"name": "test",
+	"values": [
+		{
+			"key": "id",
+			"value": "1",
+			"enabled": true
+		},
+		{
+			"key": "name",
+			"value": "John Wick",
+			"enabled": true
+		},
+		{
+			"key": "salary",
+			"value": "1000",
+			"enabled": true
+		},
+		{
+			"key": "age",
+			"value": "30",
+			"enabled": true
+		},
+		{
+			"key": "newName",
+			"value": "John Wick",
+			"enabled": true
+		},
+		{
+			"key": "newSalary",
+			"value": "5000\n",
+			"enabled": true
+		},
+		{
+			"key": "newAge",
+			"value": "35",
+			"enabled": true
+		},
+		{
+			"key": "firstId",
+			"value": "1",
+			"enabled": true
+		}
+	],
+	"_postman_variable_scope": "environment",
+	"_postman_exported_at": "2021-11-23T04:32:38.055Z",
+	"_postman_exported_using": "Postman/9.1.5"
+}
