@@ -104,8 +104,9 @@ stages:
   - deployment: UITests
     displayName: 'UI Tests'
     environment:
-      name:  'test'
+      name: 'test'
       resourceType: VirtualMachine
+      tags: project3
     strategy:
       runOnce:
         deploy:
