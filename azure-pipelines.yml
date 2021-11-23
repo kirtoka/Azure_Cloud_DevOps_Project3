@@ -121,6 +121,7 @@ stages:
               script: |
                 #! /bin/bash
                 
+                apt-get install sudo -y
                 sudo apt-get upgrade -y
                 sudo apt-get install python3-pip -y
                 sudo apt-get install unzip -y
@@ -136,7 +137,7 @@ stages:
               targetType: 'inline'
               script: |
                 #! /bin/bash
-                sudo npm i -g netlify-cli
+                ls -la
                 sudo mkdir /var/logs
                 sudo chmod 777 /var/logs
                 ls -la
