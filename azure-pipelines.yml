@@ -148,7 +148,7 @@ stages:
           - task: PublishPipelineArtifact@1
             displayName: Publish selenium logs
             inputs:
-              targetPath: '$(System.DefaultWorkingDirectory)/var/logs/selenium-test.log'
+              targetPath: '$(Pipeline.Workspace)/var/logs/selenium-test.log'
               artifactName: 'selenium-logs'
         on:
           failure:
