@@ -163,7 +163,7 @@ Please complete the following steps for this project:
 ![deployed fakerestapi](./Screenshots/Screenshot_17.png)
 
 ### Successful execution of the pipeline build results page
-![build results](./Screenshots/Screenshot_16.png)
+![build results](./Screenshots/Screenshot_31.png)
 
 ### Log output of JMeter when executed by the CI/CD pipeline
 ![JMeter test](./Screenshots/Screenshot_15.png)
