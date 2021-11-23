@@ -135,7 +135,9 @@ stages:
             inputs:
               targetType: 'inline'
               script: |
-                mkdir /var/logs
+                #! /bin/bash
+                sudo mkdir /var/logs
+                sudo chmod 777 /var/logs
                 ls -la
                 cd $(Pipeline.Workspace)/drop-selenium
                 echo $(date "+%Y-%m-%d %H:%M:%S") >> /var/logs/selenium-test.log
