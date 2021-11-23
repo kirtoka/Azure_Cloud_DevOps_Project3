@@ -156,27 +156,27 @@ Please complete the following steps for this project:
 ## Outut
 
 ### Log output of Terraform when executed by the CI/CD pipeline
-![log output of Terraform](./Screenshots/Screenshot_6.jpg)
-![log output of Terraform](./Screenshots/Screenshot_8.jpg)
+![log output of Terraform](./Screenshots/Screenshot_6.png)
+![log output of Terraform](./Screenshots/Screenshot_8.png)
 
 ### Deployed fakerestapi
-![deployed fakerestapi](./Screenshots/Screenshot_17.jpg)
+![deployed fakerestapi](./Screenshots/Screenshot_17.png)
 
 ### Successful execution of the pipeline build results page
-![build results](./Screenshots/Screenshot_16.jpg)
+![build results](./Screenshots/Screenshot_16.png)
 
 ### Log output of JMeter when executed by the CI/CD pipeline
-![JMeter test](./Screenshots/Screenshot_15.jpg)
+![JMeter test](./Screenshots/Screenshot_15.png)
 
 ### Execution of the UI (Selenium) test suite by the CI/CD pipeline
-![Selenium test](./Screenshots/Screenshot_14.jpg)
+![Selenium test](./Screenshots/Screenshot_14.png)
 
 ### Execution of the Integration test suite by the CI/CD pipeline
-![Integration test](./Screenshots/Screenshot_16.jpg)
-![Integration test](./Screenshots/Screenshot_27.jpg)
-![Integration test](./Screenshots/Screenshot_18.jpg)
-![Integration test](./Screenshots/Screenshot_29.jpg)
-![Integration test](./Screenshots/Screenshot_30.jpg)
+![Integration test](./Screenshots/Screenshot_16.png)
+![Integration test](./Screenshots/Screenshot_27.png)
+![Integration test](./Screenshots/Screenshot_18.png)
+![Integration test](./Screenshots/Screenshot_29.png)
+![Integration test](./Screenshots/Screenshot_30.png)
 
 
 ### Email received when the 404 alert is triggered
