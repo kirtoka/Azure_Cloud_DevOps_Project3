@@ -120,9 +120,10 @@ stages:
               targetType: 'inline'
               script: |
                 #! /bin/bash
-                echo 1
+                pwd
+                hostname
+                echo sudo
                 sudo npm install -g
-                echo 2
                 sudo apt-get upgrade -y
                 sudo apt-get install python3-pip -y
                 sudo apt-get install unzip -y
