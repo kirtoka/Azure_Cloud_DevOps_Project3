@@ -30,7 +30,7 @@ stages:
           backendAzureRmResourceGroupName: 'tfstate'
           backendAzureRmStorageAccountName: 'tfstate16018'
           backendAzureRmContainerName: 'tfstate'
-          backendAzureRmKey: 'terraform.tfstate'
+          backendAzureRmKey: 'terraform.state'
           workingDirectory: '$(System.DefaultWorkingDirectory)/terraform/environments/test'
               
       - task: TerraformTaskV2@2
