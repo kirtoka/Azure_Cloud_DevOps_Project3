@@ -156,32 +156,28 @@ Please complete the following steps for this project:
 ## Outut
 
 ### Log output of Terraform when executed by the CI/CD pipeline
-![log output of Terraform](./Screenshots/screenshot_6.jpg)
-![log output of Terraform](./Screenshots/screenshot_8.jpg)
+![log output of Terraform](./Screenshots/Screenshot_6.jpg)
+![log output of Terraform](./Screenshots/Screenshot_8.jpg)
 
 ### Deployed fakerestapi
-![deployed fakerestapi](./Screenshots/screenshot_17.jpg)
+![deployed fakerestapi](./Screenshots/Screenshot_17.jpg)
 
 ### Successful execution of the pipeline build results page
-![build fakerestapi](./Screenshots/screenshot_16.jpg)
+![build results](./Screenshots/Screenshot_16.jpg)
 
 ### Log output of JMeter when executed by the CI/CD pipeline
-![build fakerestapi](./Screenshots/screenshot_15.jpg)
+![JMeter test](./Screenshots/Screenshot_15.jpg)
 
 ### Execution of the UI (Selenium) test suite by the CI/CD pipeline
-![build fakerestapi](./Screenshots/screenshot_14.jpg)
+![Selenium test](./Screenshots/Screenshot_14.jpg)
 
 ### Execution of the Integration test suite by the CI/CD pipeline
-![build fakerestapi](./Screenshots/screenshot_16.jpg)
-![build fakerestapi](./Screenshots/screenshot_27.jpg)
-![build fakerestapi](./Screenshots/screenshot_18.jpg)
-![build fakerestapi](./Screenshots/screenshot_29.jpg)
-![build fakerestapi](./Screenshots/screenshot_30.jpg)
+![Integration test](./Screenshots/Screenshot_16.jpg)
+![Integration test](./Screenshots/Screenshot_27.jpg)
+![Integration test](./Screenshots/Screenshot_18.jpg)
+![Integration test](./Screenshots/Screenshot_29.jpg)
+![Integration test](./Screenshots/Screenshot_30.jpg)
 
-![newman regression test](./Screenshots/regression_test.jpg)
-![newman data validation test](./Sscreenshots/data_validation_test.jpg)
-![newman test runs](./Screenshots/integration_test_runs.jpg)
-![newman test summary](./Screenshots/integration_test_summary.jpg)
 
 ### Email received when the 404 alert is triggered
 ![azure monitor alert](./Screenshots/Screenshot_20.png)
