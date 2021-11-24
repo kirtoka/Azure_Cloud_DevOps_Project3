@@ -198,12 +198,6 @@ stages:
           sudo npm install -g newman
           echo $(date "+%Y-%m-%d %H:%M:%S") -----------------
           ls -la
-          mkdir -p output/validation_tests/
-          sudo chmod 777 /output/validation_tests/
-          mkdir -p output/regression_tests/
-          sudo chmod 777 /output/regression_tests/
-          echo $(date "+%Y-%m-%d %H:%M:%S") -----------------
-          ls -la
         workingDirectory: $(System.DefaultWorkingDirectory)
     - task: CmdLine@2
       displayName: 'Postman data validation tests'
@@ -233,12 +227,14 @@ stages:
         testResultsFormat: 'JUnit'
         testResultsFiles: '/output/validation_tests/*.xml'
         testRunTitle: "Validation test results"
+        workingDirectory: '$(System.DefaultWorkingDirectory)/automatedtesting/postman'
     - task: PublishTestResults@2
       displayName: 'Publish Test Results'
       inputs:
         testResultsFormat: 'JUnit'
         testResultsFiles: '/output/regression_tests/*.xml'
         testRunTitle: "Regression test results"
+        workingDirectory: '$(System.DefaultWorkingDirectory)/automatedtesting/postman'
 
   - job: LoadTests
     displayName: Load Tests
