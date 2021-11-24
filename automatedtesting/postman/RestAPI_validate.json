@@ -153,15 +153,15 @@
 							"var employee = employees.find(e => e.id == idVar);",
 							"",
 							"pm.test(`Employee with id ${idVar} exists`, function () {",
-							"    pm.expect(employee.id).to.eq(idVar)",
+							"    pm.expect(employee.id).to.eq(parseInt(idVar))",
 							"});",
 							"",
 							"var {id, employee_name, employee_salary, employee_age} = employee;",
 							"",
 							"pm.test(`Employee with id ${idVar} has correct data`, function () {",
 							"    pm.expect(employee_name).to.eql(\"Tiger Nixon\");",
-							"    pm.expect(employee_salary).to.eql(\"320800\");",
-							"    pm.expect(employee_age).to.eql(\"61\");",
+							"    pm.expect(employee_salary).to.eql(parseInt(\"320800\"));",
+							"    pm.expect(employee_age).to.eql(parseInt(\"61\"));",
 							"});"
 						],
 						"type": "text/javascript"

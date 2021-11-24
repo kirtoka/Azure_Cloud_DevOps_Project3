@@ -156,35 +156,34 @@ Please complete the following steps for this project:
 ## Outut
 
 ### Log output of Terraform when executed by the CI/CD pipeline
-![log output of Terraform](./Screenshots/Screenshot_6.png)
-![log output of Terraform](./Screenshots/Screenshot_8.png)
+![log output of Terraform](./Screenshots/Screenshot_38.png)
 
 ### Deployed fakerestapi
-![deployed fakerestapi](./Screenshots/Screenshot_17.png)
+![deployed fakerestapi](./Screenshots/Screenshot_43.png)
+![deployed fakerestapi](./Screenshots/Screenshot_44.png)
 
 ### Successful execution of the pipeline build results page
-![build results](./Screenshots/Screenshot_31.png)
+![build results](./Screenshots/Screenshot_39.png)
 
 ### Log output of JMeter when executed by the CI/CD pipeline
-![JMeter test](./Screenshots/Screenshot_15.png)
+![JMeter test](./Screenshots/Screenshot_55.png)
+![JMeter test](./Screenshots/Screenshot_56.png)
 
 ### Execution of the UI (Selenium) test suite by the CI/CD pipeline
-![Selenium test](./Screenshots/Screenshot_14.png)
+![Selenium test](./Screenshots/Screenshot_45.png)
+![Selenium test](./Screenshots/Screenshot_46.png)
 
 ### Execution of the Integration test suite by the CI/CD pipeline
-![Integration test](./Screenshots/Screenshot_16.png)
-![Integration test](./Screenshots/Screenshot_27.png)
-![Integration test](./Screenshots/Screenshot_18.png)
-![Integration test](./Screenshots/Screenshot_29.png)
-![Integration test](./Screenshots/Screenshot_30.png)
+![Integration test](./Screenshots/Screenshot_48.png)
+![Integration test](./Screenshots/Screenshot_51.png)
+![Integration test](./Screenshots/Screenshot_53.png)
+![Integration test](./Screenshots/Screenshot_54.png)
 
 
 ### Email received when the 404 alert is triggered
-![azure monitor alert](./Screenshots/Screenshot_20.png)
-![azure monitor alert](./Screenshots/Screenshot_21.png)
+![azure monitor alert](./Screenshots/Screenshot_65.png)
 
 ### Appservice metrics
-![azure metrics](./Screenshots/Screenshot_19.png)
-![azure metrics](./Screenshots/Screenshot_22.png)
+![azure metrics](./Screenshots/Screenshot_63.png)
 ### Log analytics queries
-![azure log analytics](./Screenshots/Screenshot_28.png)
+![azure log analytics](./Screenshots/Screenshot_67.png)
