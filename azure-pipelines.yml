@@ -168,7 +168,6 @@ stages:
                 #! /bin/bash
                 sudo mkdir /var/logs
                 sudo chmod 777 /var/logs
-                ls -la
                 cd $(Pipeline.Workspace)/drop-selenium
                 echo $(date "+%Y-%m-%d %H:%M:%S") >> /var/logs/selenium-test.log
                 python3 login.py >> /var/logs/selenium-test.log
@@ -197,7 +196,8 @@ stages:
         script: |
           sudo npm install -g newman
           echo $(date "+%Y-%m-%d %H:%M:%S") -----------------
-          ls -la
+          sudo mkdir /var/test_result
+          sudo chmod 777 /var/test_result
         workingDirectory: $(System.DefaultWorkingDirectory)
     - task: CmdLine@2
       displayName: 'Postman data validation tests'
@@ -208,7 +208,7 @@ stages:
           --suppress-exit-code \
           --delay-request 1000 \
           --reporters cli,junit \
-          --reporter-junit-export /output/validation_tests/newman_validation_test_result.xml
+          --reporter-junit-export $(Build.SourcesDirectory)/automatedtesting/postman/newman_test_result_validation.xml
           echo $(date "+%Y-%m-%d %H:%M:%S") -----------------
           ls -la
         workingDirectory: '$(System.DefaultWorkingDirectory)/automatedtesting/postman'
@@ -221,7 +221,7 @@ stages:
           --suppress-exit-code \
           --delay-request 1000 \
           --reporters cli,junit \
-          --reporter-junit-export /output/regression_tests/newman_regression_test_result.xml
+          --reporter-junit-export --reporter-junit-export $(Build.SourcesDirectory)/automatedtesting/postman/newman_test_result_regression.xml
           echo $(date "+%Y-%m-%d %H:%M:%S") -----------------
           ls -la
         workingDirectory: '$(System.DefaultWorkingDirectory)/automatedtesting/postman'
@@ -229,16 +229,16 @@ stages:
       displayName: 'Publish Validation Test Results'
       inputs:
         testResultsFormat: 'JUnit'
-        testResultsFiles: '*.xml'
+        testResultsFiles: '**/newman_test_result_validation'
         testRunTitle: "Validation test results"
-        searchFolder: "$(System.DefaultWorkingDirectory)/automatedtesting/postman/output/validation_tests/"
+        #searchFolder: "$(System.DefaultWorkingDirectory)/automatedtesting/postman/output/validation_tests/"
     - task: PublishTestResults@2
       displayName: 'Publish  Regression Test Results'
       inputs:
         testResultsFormat: 'JUnit'
-        testResultsFiles: '*.xml'
+        testResultsFiles: '**/newman_test_result_regression.xml'
         testRunTitle: "Regression test results"
-        searchFolder: "$(System.DefaultWorkingDirectory)/automatedtesting/postman/output/regression_tests/"
+        #searchFolder: "$(System.DefaultWorkingDirectory)/automatedtesting/postman/output/regression_tests/"
 
   - job: LoadTests
     displayName: Load Tests
