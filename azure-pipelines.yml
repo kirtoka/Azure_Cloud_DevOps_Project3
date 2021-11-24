@@ -178,14 +178,22 @@ stages:
       continueOnError: true
       inputs:
         script: |
-          newman run -e test.environment.json RestAPI_validate.json --reporters cli,junit --reporter-junit-export $(Build.SourcesDirectory)/automatedtesting/postman/newman_test_result.xml
+          newman run -e test.environment.json RestAPI_validate.json \
+          --suppress-exit-code \
+          --delay-request 5000 \ 
+          --reporters cli,junit \ 
+          --reporter-junit-export $(Build.SourcesDirectory)/automatedtesting/postman/newman_validation_test_result.xml
         workingDirectory: '$(System.DefaultWorkingDirectory)/automatedtesting/postman'
     - task: CmdLine@2
       displayName: 'Postman regression tests'
       continueOnError: true
       inputs:
         script: |
-          newman run -e test.environment.json RestAPI_regression.json --reporters cli,junit --reporter-junit-export $(Build.SourcesDirectory)/automatedtesting/postman/newman_test_result.xml
+          newman run -e test.environment.json RestAPI_regression.json \
+          --suppress-exit-code \
+           --delay-request 5000 \ 
+          --reporters cli,junit \
+          --reporter-junit-export $(Build.SourcesDirectory)/automatedtesting/postman/newman_regression_test_result.xml
         workingDirectory: '$(System.DefaultWorkingDirectory)/automatedtesting/postman'
     - task: PublishTestResults@2
       displayName: 'Publish Test Results'
