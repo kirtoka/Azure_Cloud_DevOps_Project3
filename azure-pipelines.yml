@@ -206,7 +206,7 @@ stages:
         script: |
           newman run -e test.environment.json RestAPI_validate.json \
           --suppress-exit-code \
-          --delay-request 10000 \
+          --delay-request 1000 \
           --reporters cli,junit \
           --reporter-junit-export /output/validation_tests/newman_validation_test_result.xml
           echo $(date "+%Y-%m-%d %H:%M:%S") -----------------
@@ -219,7 +219,7 @@ stages:
         script: |
           newman run -e test.environment.json RestAPI_regression.json \
           --suppress-exit-code \
-          --delay-request 10000 \
+          --delay-request 1000 \
           --reporters cli,junit \
           --reporter-junit-export /output/regression_tests/newman_regression_test_result.xml
           echo $(date "+%Y-%m-%d %H:%M:%S") -----------------
