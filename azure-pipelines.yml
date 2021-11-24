@@ -194,7 +194,10 @@ stages:
     - task: CmdLine@2
       displayName: 'Install Newman runner'
       inputs:
-        script: 'sudo npm install -g newman'
+        script: |
+          sudo npm install -g newman
+          mkdir -p output/validation_tests/
+          mkdir -p output/regression_tests/
         workingDirectory: $(System.DefaultWorkingDirectory)
     - task: CmdLine@2
       displayName: 'Postman data validation tests'
@@ -205,7 +208,7 @@ stages:
           --suppress-exit-code \
           --delay-request 10000 \ 
           --reporters cli,junit \ 
-          --reporter-junit-export $(Build.SourcesDirectory)/automatedtesting/postman/newman_validation_test_result.xml
+          --reporter-junit-export output/validation_tests/newman_validation_test_result.xml
         workingDirectory: '$(System.DefaultWorkingDirectory)/automatedtesting/postman'
     - task: CmdLine@2
       displayName: 'Postman regression tests'
@@ -216,19 +219,19 @@ stages:
           --suppress-exit-code \
            --delay-request 10000 \ 
           --reporters cli,junit \
-          --reporter-junit-export $(Build.SourcesDirectory)/automatedtesting/postman/newman_regression_test_result.xml
+          --reporter-junit-export output/regression_tests/newman_regression_test_result.xml
         workingDirectory: '$(System.DefaultWorkingDirectory)/automatedtesting/postman'
     - task: PublishTestResults@2
       displayName: 'Publish Test Results'
       inputs:
         testResultsFormat: 'JUnit'
-        testResultsFiles: '**/newman_validation_test_result.xml'
+        testResultsFiles: 'output/validation_tests/*.xml'
         testRunTitle: "Validation test results"
     - task: PublishTestResults@2
       displayName: 'Publish Test Results'
       inputs:
         testResultsFormat: 'JUnit'
-        testResultsFiles: '**/newman_regression_test_result.xml'
+        testResultsFiles: 'output/regression_tests/*.xml'
         testRunTitle: "Regression test results"
 
   - job: LoadTests
