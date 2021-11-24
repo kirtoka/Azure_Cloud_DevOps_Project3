@@ -1,7 +1,7 @@
 {
 	"info": {
-		"_postman_id": "b3ad0d4a-1a9e-48e1-beeb-7d71a38c0247",
-		"name": "Postman Regression Tests Copy",
+		"_postman_id": "8649b792-b2d6-411b-b899-d5850960295b",
+		"name": "Postman Regression Tests",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
 	"item": [
@@ -63,7 +63,10 @@
 							"pm.test(\"Status code is 200\", function () {",
 							"    pm.response.to.have.status(200);",
 							"});",
-							""
+							"",
+							"pm.test(\"Successful response\", function () {",
+							"    pm.expect(pm.response.text()).to.include(\"success\");",
+							"});"
 						],
 						"type": "text/javascript"
 					}
@@ -109,7 +112,10 @@
 							"pm.test(\"Status code is 200\", function () {",
 							"    pm.response.to.have.status(200);",
 							"});",
-							""
+							"",
+							"pm.test(\"Successful response\", function () {",
+							"    pm.expect(pm.response.text()).to.include(\"success\");",
+							"});"
 						],
 						"type": "text/javascript"
 					}
