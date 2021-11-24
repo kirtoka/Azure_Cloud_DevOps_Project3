@@ -209,6 +209,8 @@ stages:
           --delay-request 10000 \ 
           --reporters cli,junit \ 
           --reporter-junit-export /output/validation_tests/newman_validation_test_result.xml
+          echo $(date "+%Y-%m-%d %H:%M:%S") -----------------
+          ls -la
         workingDirectory: '$(System.DefaultWorkingDirectory)/automatedtesting/postman'
     - task: CmdLine@2
       displayName: 'Postman regression tests'
@@ -220,21 +222,23 @@ stages:
            --delay-request 10000 \ 
           --reporters cli,junit \
           --reporter-junit-export /output/regression_tests/newman_regression_test_result.xml
+          echo $(date "+%Y-%m-%d %H:%M:%S") -----------------
+          ls -la
         workingDirectory: '$(System.DefaultWorkingDirectory)/automatedtesting/postman'
     - task: PublishTestResults@2
-      displayName: 'Publish Test Results'
+      displayName: 'Publish Validation Test Results'
       inputs:
         testResultsFormat: 'JUnit'
-        testResultsFiles: '/output/validation_tests/*.xml'
+        testResultsFiles: '*.xml'
         testRunTitle: "Validation test results"
-        workingDirectory: '$(System.DefaultWorkingDirectory)/automatedtesting/postman'
+        searchFolder: "$(System.DefaultWorkingDirectory)/automatedtesting/postman/output/validation_tests/"
     - task: PublishTestResults@2
-      displayName: 'Publish Test Results'
+      displayName: 'Publish  Regression Test Results'
       inputs:
         testResultsFormat: 'JUnit'
-        testResultsFiles: '/output/regression_tests/*.xml'
+        testResultsFiles: '*.xml'
         testRunTitle: "Regression test results"
-        workingDirectory: '$(System.DefaultWorkingDirectory)/automatedtesting/postman'
+        searchFolder: "$(System.DefaultWorkingDirectory)/automatedtesting/postman/output/regression_tests/"
 
   - job: LoadTests
     displayName: Load Tests
