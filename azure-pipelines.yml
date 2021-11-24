@@ -135,9 +135,12 @@ stages:
                 sudo python3 get-pip.py
                 sudo pip3 install --upgrade pip
                 sudo pip3 install selenium
+<<<<<<< HEAD
                 cd $(Pipeline.Workspace)/drop-selenium
                 unzip -o $(Pipeline.Workspace)/drop-selenium/$(Build.BuildId)-selenium-tests -d .
 
+=======
+>>>>>>> e45f87e384b57830947cf72081ab5f6c21527352
             #wget https://raw.githubusercontent.com/Microsoft/OMS-Agent-for-Linux/master/installer/scripts/onboard_agent.sh && sh onboard_agent.sh -w ${AZURE_LOG_ANALYTICS_ID} -s ${AZURE_LOG_ANALYTICS_PRIMARY_KEY} -d opinsights.azure.com
             #env: 
               #AZURE_LOG_ANALYTICS_ID: $(la_workspace_id)

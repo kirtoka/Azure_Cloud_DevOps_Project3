@@ -1,72 +1,84 @@
-# #!/usr/bin/env python
+#!/usr/bin/env python
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options as ChromeOptions
-from selenium.common.exceptions import NoSuchElementException
-import logging
-import sys
+import datetime
 
-# Start the browser and login with standard_user
+URL_LOGIN = 'https://www.saucedemo.com/'
+URL_INVENTORY = 'https://www.saucedemo.com/inventory.html'
+URL_CART = 'https://www.saucedemo.com/cart.html'
+
+def log_status(text):
+    """log_status log status including timestamp"""
+    timestamp = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    print(f"{timestamp} - {text}")
+
+def login(driver, user, password):
+    """Login to the website"""
+    log_status('Navigating to the demo page to login.')
+    driver.get(URL_LOGIN)
+    driver.find_element_by_id("user-name").send_keys(user)
+    driver.find_element_by_id("password").send_keys(password)
+    driver.find_element_by_id("login-button").click()
+    assert URL_INVENTORY in driver.current_url
+    log_status(f"Login with username {user} and password {password} successful")
 
 
-def login(user, password):
-    print('Starting the browser...')
+def add_items(driver):
+    """Add items to the cart"""
+    cart = []
+    log_status('Add all items to the cart')
+    items = driver.find_elements_by_class_name('inventory_item')
+    for item in items:
+        item_name = item.find_element_by_class_name('inventory_item_name').text
+        cart.append(item_name)
+        item.find_element_by_class_name('btn_inventory').click()
+        log_status(f'Added {item_name}')
+    cart_item = driver.find_element_by_class_name('shopping_cart_badge')
+    assert int(cart_item.text) == len(items)
+
+    driver.find_element_by_class_name('shopping_cart_link').click()
+    assert URL_CART in driver.current_url
+
+    for item in driver.find_elements_by_class_name('inventory_item_name'):
+        assert item.text in cart
+    log_status('Finished testing adding items to the cart')
+
+
+def remove_items(driver):
+    """Remove items from the cart"""
+    driver.find_element_by_class_name('shopping_cart_link').click()
+    assert URL_CART in driver.current_url
+
+    cart_items = len(driver.find_elements_by_class_name('cart_item'))
+
+    log_status(f"Number of items in the cart = {cart_items}")
+    for item in driver.find_elements_by_class_name('cart_item'):
+        item_name = item.find_element_by_class_name('inventory_item_name').text
+        item.find_element_by_class_name('cart_button').click()
+        log_status(f'Removed {item_name}')
+
+    cart_items = len(driver.find_elements_by_class_name('cart_item'))
+    assert cart_items == 0
+    log_status('Finshed testing removing items from the cart')
+
+
+def run_tests():
+    """Run the test"""
+    log_status("Starting the browser...")
     options = ChromeOptions()
+    options.add_argument('--no-sandbox')
     options.add_argument("--headless")
+    options.add_argument('--disable-gpu')
     driver = webdriver.Chrome(options=options)
-    logging.basicConfig(stream=sys.stdout, level=logging.INFO)
+    log_status('Browser started successfully.')
+    log_status('Login')
+    login(driver, "standard_user", "secret_sauce")
+    log_status('Add items')
+    add_items(driver)
+    log_status('Remove items')
+    remove_items(driver)
+    log_status("Tests Completed")
 
-    # driver = webdriver.Chrome()
-    print('Browser started successfully. Navigating to the demo page to login.')
-    driver.get('https://www.saucedemo.com/')
 
-    logging.info('Loging in to https://www.saucedemo.com/')
-    driver.find_element_by_css_selector(
-        'input[data-test="username"]').send_keys(user)
-    driver.find_element_by_css_selector(
-        'input[data-test="password"]').send_keys(password)
-    driver.find_element_by_css_selector('input[value=LOGIN]').click()
-
-    logging.info('Searching for Products')
-    headerLabel = driver.find_element_by_class_name('product_label').text
-    assert "Products" in headerLabel
-    logging.info('Successfully logged in, user: ' + user)
-
-    logging.info('Find products')
-    products = driver.find_elements_by_css_selector('.inventory_item')
-
-    logging.info('Add products to cart')
-    for product in products:
-        product_name = product.find_element_by_css_selector(
-            '.inventory_item_name').text
-        product.find_element_by_css_selector('button.btn_inventory').click()
-        logging.info('Product added to cart: ' + product_name)
-
-    logging.info('Verify if cart has 6 added products')
-    cart_label = driver.find_element_by_css_selector(
-        '.shopping_cart_badge').text
-    assert cart_label == '6'
-
-    logging.info('Navigate to cart')
-    driver.find_element_by_css_selector('a.shopping_cart_link').click()
-    assert '/cart.html' in driver.current_url, 'Cart navigation unsuccessful'
-
-    logging.info('Removing products from cart')
-    cart_products = driver.find_elements_by_css_selector('.cart_item')
-    for product in cart_products:
-        product_name = product.find_element_by_css_selector(
-            '.inventory_item_name').text
-        product.find_element_by_css_selector('button.cart_button').click()
-        logging.info('Removed from cart: ' + product_name)
-
-    logging.info('Verify if cart is empty')
-    if driver.find_elements_by_css_selector('.shopping_cart_badge'):
-        logging.info('Cart is empty')
-        cart_state = 1
-    else:
-        cart_state = 0
-    
-    logging.info('Cart state: ' + str(cart_state))
-    assert cart_state == 0
-
-login('standard_user', 'secret_sauce')
-
+if __name__ == "__main__":
+    run_tests()
