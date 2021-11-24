@@ -119,19 +119,48 @@ stages:
             inputs:
               targetType: 'inline'
               script: |
-                #! /bin/bash
                 pwd
                 hostname
                 echo sudo
-                sudo apt-get upgrade -y
-                sudo apt-get install python3-pip -y
-                sudo apt-get install unzip -y
-                sudo apt-get install -y chromium-browser
-                sudo apt-get install -y chromium-chromedriver
-                pip3 install selenium
-                export PATH=$PATH:/usr/lib/chromium-browser/
+                export LC_ALL=C
+                sudo apt-get install -y software-properties-common
+                sudo apt-add-repository -y universe
+                sudo apt-add-repository -y ppa:deadsnakes/ppa
+                sudo apt-get -y update
+                sudo apt-get install -y python3.8 python3.8-distutils python3-pip unzip chromium-browser chromium-chromedriver
+                sudo rm /usr/bin/python3
+                sudo ln -s /usr/bin/python3.8 /usr/bin/python3
+                sudo apt remove -y python3-pip
+                curl https://bootstrap.pypa.io/get-pip.py -o get-pip.py
+                sudo python3 get-pip.py
+                sudo pip3 install --upgrade pip
+                sudo pip3 install selenium
                 cd $(Pipeline.Workspace)/drop-selenium
                 unzip -o $(Pipeline.Workspace)/drop-selenium/$(Build.BuildId)-selenium-tests -d .
+
+            #wget https://raw.githubusercontent.com/Microsoft/OMS-Agent-for-Linux/master/installer/scripts/onboard_agent.sh && sh onboard_agent.sh -w ${AZURE_LOG_ANALYTICS_ID} -s ${AZURE_LOG_ANALYTICS_PRIMARY_KEY} -d opinsights.azure.com
+            #env: 
+              #AZURE_LOG_ANALYTICS_ID: $(la_workspace_id)
+              #AZURE_LOG_ANALYTICS_PRIMARY_KEY: $(la_primary_key)
+                #------------------------------------
+                ##! /bin/bash
+                #pwd
+                #hostname
+                #echo sudo
+                #sudo apt-get upgrade -y
+                #sudo apt-get install python3-pip -y
+                #sudo apt-get install unzip -y
+                #sudo apt-get install -y chromium-browser
+                #sudo apt-get install -y chromium-chromedriver
+                #python3 -m pip install --upgrade pip
+                #pip3 install selenium
+                #python3 -V
+                #pip3 -V
+                #/usr/bin/chromium-browser --version
+                #/usr/bin/chromedriver --version
+                #export PATH=$PATH:/usr/lib/chromium-browser/
+                #cd $(Pipeline.Workspace)/drop-selenium
+                #unzip -o $(Pipeline.Workspace)/drop-selenium/$(Build.BuildId)-selenium-tests -d .
           - task: Bash@3
             displayName: 'Run Selenium Tests'
             inputs:
@@ -173,14 +202,22 @@ stages:
       continueOnError: true
       inputs:
         script: |
-          newman run -e test.environment.json RestAPI_validate.json --reporters cli,junit --reporter-junit-export $(Build.SourcesDirectory)/automatedtesting/postman/newman_test_result.xml
+          newman run -e test.environment.json RestAPI_validate.json \
+          --suppress-exit-code \
+          --delay-request 5000 \ 
+          --reporters cli,junit \ 
+          --reporter-junit-export $(Build.SourcesDirectory)/automatedtesting/postman/newman_validation_test_result.xml
         workingDirectory: '$(System.DefaultWorkingDirectory)/automatedtesting/postman'
     - task: CmdLine@2
       displayName: 'Postman regression tests'
       continueOnError: true
       inputs:
         script: |
-          newman run -e test.environment.json RestAPI_regression.json --reporters cli,junit --reporter-junit-export $(Build.SourcesDirectory)/automatedtesting/postman/newman_test_result.xml
+          newman run -e test.environment.json RestAPI_regression.json \
+          --suppress-exit-code \
+           --delay-request 5000 \ 
+          --reporters cli,junit \
+          --reporter-junit-export $(Build.SourcesDirectory)/automatedtesting/postman/newman_regression_test_result.xml
         workingDirectory: '$(System.DefaultWorkingDirectory)/automatedtesting/postman'
     - task: PublishTestResults@2
       displayName: 'Publish Test Results'
