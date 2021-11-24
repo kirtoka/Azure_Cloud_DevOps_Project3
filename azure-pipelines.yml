@@ -196,8 +196,14 @@ stages:
       inputs:
         script: |
           sudo npm install -g newman
+          echo $(date "+%Y-%m-%d %H:%M:%S") -----------------
+          ls -la
           mkdir -p output/validation_tests/
+          sudo chmod 777 /output/validation_tests/
           mkdir -p output/regression_tests/
+          sudo chmod 777 /output/regression_tests/
+          echo $(date "+%Y-%m-%d %H:%M:%S") -----------------
+          ls -la
         workingDirectory: $(System.DefaultWorkingDirectory)
     - task: CmdLine@2
       displayName: 'Postman data validation tests'
@@ -208,7 +214,7 @@ stages:
           --suppress-exit-code \
           --delay-request 10000 \ 
           --reporters cli,junit \ 
-          --reporter-junit-export output/validation_tests/newman_validation_test_result.xml
+          --reporter-junit-export /output/validation_tests/newman_validation_test_result.xml
         workingDirectory: '$(System.DefaultWorkingDirectory)/automatedtesting/postman'
     - task: CmdLine@2
       displayName: 'Postman regression tests'
@@ -219,19 +225,19 @@ stages:
           --suppress-exit-code \
            --delay-request 10000 \ 
           --reporters cli,junit \
-          --reporter-junit-export output/regression_tests/newman_regression_test_result.xml
+          --reporter-junit-export /output/regression_tests/newman_regression_test_result.xml
         workingDirectory: '$(System.DefaultWorkingDirectory)/automatedtesting/postman'
     - task: PublishTestResults@2
       displayName: 'Publish Test Results'
       inputs:
         testResultsFormat: 'JUnit'
-        testResultsFiles: 'output/validation_tests/*.xml'
+        testResultsFiles: '/output/validation_tests/*.xml'
         testRunTitle: "Validation test results"
     - task: PublishTestResults@2
       displayName: 'Publish Test Results'
       inputs:
         testResultsFormat: 'JUnit'
-        testResultsFiles: 'output/regression_tests/*.xml'
+        testResultsFiles: '/output/regression_tests/*.xml'
         testRunTitle: "Regression test results"
 
   - job: LoadTests
