@@ -208,7 +208,7 @@ stages:
           --suppress-exit-code \
           --delay-request 1000 \
           --reporters cli,junit \
-          --reporter-junit-export $(Build.SourcesDirectory)/automatedtesting/postman/newman_test_result_validation.xml
+          --reporter-junit-export --reporter-junit-export $(Build.SourcesDirectory)/automatedtesting/postman/newman_test_result_validation.xml
           echo $(date "+%Y-%m-%d %H:%M:%S") -----------------
           ls -la
         workingDirectory: '$(System.DefaultWorkingDirectory)/automatedtesting/postman'
