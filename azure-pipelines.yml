@@ -222,7 +222,16 @@ stages:
       displayName: 'Publish Test Results'
       inputs:
         testResultsFormat: 'JUnit'
-        testResultsFiles: '**/newman_test_*.xml'
+        testResultsFiles: "*.xml"
+        testResultsFiles: '**/newman_validation_test_result.xml'
+        testRunTitle: "Validation test results"
+    - task: PublishTestResults@2
+      displayName: 'Publish Test Results'
+      inputs:
+        testResultsFormat: 'JUnit'
+        testResultsFiles: "*.xml"
+        testResultsFiles: '**/newman_regression_test_result.xml'
+        testRunTitle: "Regression test results"
 
   - job: LoadTests
     displayName: Load Tests
