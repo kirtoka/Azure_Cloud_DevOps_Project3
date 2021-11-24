@@ -229,7 +229,7 @@ stages:
       displayName: 'Publish Validation Test Results'
       inputs:
         testResultsFormat: 'JUnit'
-        testResultsFiles: '**/newman_test_result_validation'
+        testResultsFiles: '**/newman_test_result_validation.xml'
         testRunTitle: "Validation test results"
         #searchFolder: "$(System.DefaultWorkingDirectory)/automatedtesting/postman/output/validation_tests/"
     - task: PublishTestResults@2
